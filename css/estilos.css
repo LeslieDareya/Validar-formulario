@@ -1,0 +1,721 @@
+
+:root {
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* ==========================================
+     PALETA ABIBOLA
+     ========================================== */
+
+  --color-bg: #F7F7F5;
+  --color-surface: #F9F1F8;
+
+  --color-primary: #753A72;
+  --color-primary-hover: #5F2F5D;
+
+  --color-text-main: #753A72;
+  --color-text-muted: #753A72;
+
+  --color-border: #DFD3DD;
+
+  /* Morado para acciones */
+  --color-danger: #753A72;
+  --color-danger-hover: #5F2F5D;
+
+  --color-success: #753A72;
+  --color-success-bg: #F9F1F8;
+
+  /* Colores secundarios */
+  --color-rosa: #EBE5E5;
+  --color-lila: #DFD3DD;
+
+  /* Bordes */
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  /* Sombras */
+  --shadow-sm:
+    0 1px 2px 0 rgba(117, 58, 114, 0.05);
+
+  --shadow-md:
+    0 4px 6px -1px rgba(117, 58, 114, 0.10),
+    0 2px 4px -1px rgba(117, 58, 114, 0.06);
+}
+
+
+/* ==========================================
+   CONFIGURACIÓN GENERAL
+   ========================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  line-height: 1.5;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+}
+
+
+.contenedor {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+/* ==========================================
+   HEADER Y NAVEGACIÓN
+   ========================================== */
+
+.site-header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+
+.site-header__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+/* ==========================================
+   LOGO
+   ========================================== */
+
+.logo {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+
+  color: var(--color-text-main);
+
+  text-decoration: none;
+}
+
+
+.logo span {
+  color: var(--color-primary);
+}
+
+
+/* ==========================================
+   NAVEGACIÓN
+   ========================================== */
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+
+.nav__link {
+  text-decoration: none;
+
+  color: var(--color-text-muted);
+
+  font-weight: 500;
+
+  padding: 0.5rem 0.75rem;
+
+  border-radius: var(--radius-sm);
+
+  transition: all 0.2s ease;
+}
+
+
+.nav__link:hover,
+.nav__link.is-active {
+  color: var(--color-primary);
+
+  background-color: var(--color-rosa);
+}
+
+
+/* ==========================================
+   TÍTULOS Y BOTONES
+   ========================================== */
+
+.page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 2rem;
+}
+
+
+.page__title,
+h1 {
+  font-family: var(--font-heading);
+
+  font-size: 1.75rem;
+
+  color: var(--color-text-main);
+}
+
+
+.page__subtitle,
+p {
+  color: var(--color-text-muted);
+
+  font-size: 0.95rem;
+}
+
+
+/* ==========================================
+   BOTÓN PRINCIPAL
+   ========================================== */
+
+.btn-primary {
+  display: inline-block;
+
+  background-color: var(--color-primary);
+
+  color: white;
+
+  padding: 0.625rem 1.25rem;
+
+  border-radius: var(--radius-sm);
+
+  text-decoration: none;
+
+  font-weight: 500;
+
+  border: none;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+
+/* ==========================================
+   BOTÓN SECUNDARIO
+   ========================================== */
+
+.btn-secondary {
+  display: inline-block;
+
+  background-color: transparent;
+
+  color: var(--color-primary);
+
+  padding: 0.625rem 1.25rem;
+
+  border-radius: var(--radius-sm);
+
+  text-decoration: none;
+
+  font-weight: 500;
+
+  border: 1px solid var(--color-border);
+
+  transition: all 0.2s ease;
+}
+
+
+.btn-secondary:hover {
+  background-color: var(--color-rosa);
+
+  color: var(--color-primary-hover);
+
+  border-color: var(--color-primary);
+}
+
+
+/* ==========================================
+   TARJETAS Y LISTA DE EVENTOS
+   index.php
+   ========================================== */
+
+.card-list {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(280px, 1fr));
+
+  gap: 1.5rem;
+}
+
+
+.card {
+  background-color: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-md);
+
+  padding: 1.25rem;
+
+  box-shadow: var(--shadow-sm);
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.5rem;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+.card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: var(--shadow-md);
+
+  border-color: var(--color-primary);
+}
+
+
+/* ==========================================
+   CATEGORÍA
+   ========================================== */
+
+.card__badge {
+  align-self: flex-start;
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  background-color: var(--color-rosa);
+
+  color: var(--color-primary);
+
+  padding: 0.25rem 0.5rem;
+
+  border-radius: 4px;
+}
+
+
+/* ==========================================
+   TÍTULO DE TARJETA
+   ========================================== */
+
+.card__title {
+  font-family: var(--font-heading);
+
+  font-size: 1.1rem;
+
+  color: var(--color-primary);
+
+  margin-top: 0.25rem;
+}
+
+
+/* ==========================================
+   FECHA
+   ========================================== */
+
+.card__meta {
+  font-size: 0.875rem;
+
+  color: var(--color-text-muted);
+}
+
+
+/* ==========================================
+   DESCRIPCIÓN
+   ========================================== */
+
+.card__text {
+  font-size: 0.9rem;
+
+  color: var(--color-text-muted);
+
+  margin-top: 0.5rem;
+}
+
+
+/* ==========================================
+   BOTONES DE LAS TARJETAS
+   ========================================== */
+
+.card__actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.75rem;
+
+  margin-top: auto;
+
+  padding-top: 1rem;
+}
+
+
+/* ==========================================
+   BOTONES PEQUEÑOS
+   ========================================== */
+
+.btn-sm {
+  padding: 0.45rem 0.75rem;
+
+  font-size: 0.85rem;
+}
+
+
+/* ==========================================
+   BOTÓN EDITAR
+   MORADO
+   ========================================== */
+
+.card__actions .btn-secondary {
+  border: 1px solid var(--color-primary);
+
+  color: var(--color-primary);
+
+  background-color: transparent;
+}
+
+
+.card__actions .btn-secondary:hover {
+  background-color: var(--color-primary);
+
+  color: white;
+
+  border-color: var(--color-primary);
+}
+
+
+/* ==========================================
+   FORMULARIO DEL BOTÓN BORRAR
+   ========================================== */
+
+.form-inline {
+  display: inline;
+}
+
+
+/* ==========================================
+   BOTÓN BORRAR
+   TAMBIÉN MORADO
+   ========================================== */
+
+.btn-danger {
+  display: inline-block;
+
+  background-color: transparent;
+
+  color: var(--color-danger);
+
+  padding: 0.45rem 0.75rem;
+
+  border-radius: var(--radius-sm);
+
+  font-family: inherit;
+
+  font-size: 0.85rem;
+
+  font-weight: 500;
+
+  border: 1px solid var(--color-danger);
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+
+.btn-danger:hover {
+  background-color: var(--color-danger);
+
+  color: white;
+
+  border-color: var(--color-danger);
+}
+
+
+/* ==========================================
+   FORMULARIO
+   registrar.php / editar.php
+   ========================================== */
+
+.tarjeta {
+  background-color: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-md);
+
+  padding: 2rem;
+
+  box-shadow: var(--shadow-md);
+
+  max-width: 600px;
+
+  margin: 0 auto;
+}
+
+
+.encabezado {
+  margin-bottom: 1.5rem;
+}
+
+
+.formulario {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.25rem;
+}
+
+
+.campo {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.375rem;
+}
+
+
+/* ==========================================
+   ETIQUETAS
+   ========================================== */
+
+.campo label {
+  font-weight: 500;
+
+  font-size: 0.875rem;
+
+  color: var(--color-primary);
+}
+
+
+/* ==========================================
+   CAMPOS
+   ========================================== */
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+
+  padding: 0.625rem 0.75rem;
+
+  background-color: white;
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-sm);
+
+  font-family: inherit;
+
+  font-size: 0.95rem;
+
+  color: var(--color-text-main);
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 3px rgba(117, 58, 114, 0.10);
+}
+
+
+/* ==========================================
+   MENSAJES DE ERROR
+   ========================================== */
+
+.campo small {
+  color: var(--color-primary);
+
+  font-size: 0.8rem;
+}
+
+
+/* ==========================================
+   FILA FECHA / HORA
+   ========================================== */
+
+.fila {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 1rem;
+}
+
+
+/* ==========================================
+   BOTONES DEL FORMULARIO
+   ========================================== */
+
+.acciones {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 1rem;
+
+  margin-top: 1rem;
+}
+
+
+/* ==========================================
+   ALERTAS Y ESTADOS
+   ========================================== */
+
+.alert {
+  padding: 1rem;
+
+  border-radius: var(--radius-sm);
+
+  margin-bottom: 1.5rem;
+
+  font-weight: 500;
+}
+
+
+.alert--ok {
+  background-color: var(--color-success-bg);
+
+  color: var(--color-success);
+
+  border: 1px solid var(--color-border);
+}
+
+
+/* ==========================================
+   ESTADO VACÍO
+   ========================================== */
+
+.empty-state {
+  text-align: center;
+
+  padding: 3rem 1rem;
+
+  background-color: var(--color-surface);
+
+  border: 1px dashed var(--color-border);
+
+  border-radius: var(--radius-md);
+}
+
+
+.empty-state p {
+  margin-bottom: 1rem;
+}
+
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+.site-footer {
+  margin-top: auto;
+
+  padding: 2rem 0;
+
+  text-align: center;
+
+  font-size: 0.875rem;
+
+  color: var(--color-text-muted);
+
+  border-top: 1px solid var(--color-border);
+}
+
+
+/* ==========================================
+   DISEÑO RESPONSIVE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+  .site-header__inner {
+    flex-direction: column;
+
+    gap: 1rem;
+  }
+
+
+  .nav {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+
+  .page__header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 1rem;
+  }
+
+  .fila {
+    grid-template-columns: 1fr;
+  }
+
+
+  .acciones {
+    flex-direction: column;
+  }
+
+
+  .btn-primary,
+  .btn-secondary {
+    text-align: center;
+  }
+
+
+  /* Botones de editar y borrar */
+
+  .card__actions {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+
+  .card__actions .btn-sm,
+  .card__actions .form-inline,
+  .card__actions .form-inline button {
+    width: 100%;
+
+    text-align: center;
+  }
+
+}
+
