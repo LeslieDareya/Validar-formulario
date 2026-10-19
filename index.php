@@ -2,6 +2,10 @@
 
 require 'conexion.php';
 
+/* =====================================================
+   FUNCIONES DE AYUDA
+   ===================================================== */
+
 function e(?string $texto): string
 {
     return htmlspecialchars($texto ?? '', ENT_QUOTES, 'UTF-8');
@@ -109,15 +113,15 @@ $mysqli->close();
 
     <main class="contenedor">
         <?php if (isset($_GET['ok']) && $_GET['ok'] == '1'): ?>
-            <div class="alert alert--ok" role="status">&#9989; Evento guardado correctamente.</div>
+            <div class="alert alert--ok" role="status">Evento guardado correctamente.</div>
         <?php endif; ?>
 
         <?php if (isset($_GET['editado']) && $_GET['editado'] == '1'): ?>
-            <div class="alert alert--ok" role="status">&#9989; Evento actualizado correctamente.</div>
+            <div class="alert alert--ok" role="status">Evento actualizado correctamente.</div>
         <?php endif; ?>
 
         <?php if (isset($_GET['borrado']) && $_GET['borrado'] == '1'): ?>
-            <div class="alert alert--ok" role="status">&#9989; Evento borrado correctamente.</div>
+            <div class="alert alert--ok" role="status">Evento borrado correctamente.</div>
         <?php endif; ?>
 
         <div class="page__header">
