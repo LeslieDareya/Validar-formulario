@@ -719,3 +719,38 @@ p {
 
 }
 
+.buscador { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 8px; 
+    margin: 0 0 18px; 
+}
+
+.buscador .form-input  { 
+    flex: 1 1 220px; 
+    width: auto; 
+}
+
+.buscador .form-select { 
+    flex: 0 1 210px; 
+    width: auto; 
+}
+
+.form-input,
+.form-select {
+    padding: 0.625rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(117, 58, 114, 0.15);
+}
