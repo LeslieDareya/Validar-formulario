@@ -1,10 +1,6 @@
 <?php
-
+require __DIR__ . '/partes/sesion.php';
 require 'conexion.php';
-
-/* =====================================================
-   FUNCIONES DE AYUDA
-   ===================================================== */
 
 function e(?string $texto): string
 {
@@ -19,21 +15,10 @@ function formatearFecha(string $fecha): string
 function mostrarEvento(array $ev): string
 {
     $html = '<article class="card">';
+    $html .= '<span class="card__badge">' . e($ev['categoria']) . '</span>';
+    $html .= '<h2 class="card__title">' . e($ev['titulo']) . '</h2>';
 
-    /* Categoría (viene del JOIN) */
-    $html .= '<span class="card__badge">'
-        . e($ev['categoria'])
-        . '</span>';
-
-    /* Título */
-    $html .= '<h2 class="card__title">'
-        . e($ev['titulo'])
-        . '</h2>';
-
-    /* Fecha */
     $cuando = formatearFecha($ev['fecha']);
-
-    /* Hora opcional */
     if (!empty($ev['hora'])) {
         $cuando .= ' · ' . substr($ev['hora'], 0, 5);
     }
@@ -44,19 +29,14 @@ function mostrarEvento(array $ev): string
     $html .= '</time>';
     $html .= '</p>';
 
-    /* Descripción opcional */
     if (!empty($ev['descripcion'])) {
-        $html .= '<p class="card__text">'
-            . e($ev['descripcion'])
-            . '</p>';
+        $html .= '<p class="card__text">' . e($ev['descripcion']) . '</p>';
     }
 
     $id = (int) $ev['id'];
 
-    /* Botones */
     $html .= '<div class="card__actions">';
     $html .= '<a href="editar.php?id=' . $id . '" class="btn-secondary btn-sm">Editar</a>';
-
     $html .= '<form method="post" action="borrar.php" class="form-inline" onsubmit="return confirm(\'¿Seguro que quieres borrar este evento?\');">';
     $html .= '<input type="hidden" name="id" value="' . $id . '">';
     $html .= '<button type="submit" class="btn-danger btn-sm">Borrar</button>';
@@ -66,27 +46,45 @@ function mostrarEvento(array $ev): string
     return $html . '</article>';
 }
 
-/* =====================================================
-   EVENTOS REALES DE MYSQL (CON JOIN)
-   ===================================================== */
+$q = mb_substr(trim($_GET['q'] ?? ''), 0, 60);
+$categoriaId = (int) ($_GET['categoria'] ?? 0);
 
-$eventos = [];
+$categorias = $mysqli->query('SELECT id, nombre FROM categorias ORDER BY nombre')->fetch_all(MYSQLI_ASSOC);
+$idsValidos = array_map('intval', array_column($categorias, 'id'));
+if (!in_array($categoriaId, $idsValidos, true)) {
+    $categoriaId = 0;
+}
+$buscando = ($q !== '' || $categoriaId !== 0);
 
-$resultado = $mysqli->query(
-    "SELECT e.id, e.titulo, e.fecha, e.hora, e.descripcion,
-            c.nombre AS categoria
-     FROM eventos e
-     JOIN categorias c ON c.id = e.categoria_id
-     ORDER BY e.fecha ASC, e.hora ASC"
-);
+$condiciones = ['e.usuario_id = ?'];
+$tipos       = 'i';
+$valores     = [$usuarioId];
 
-while ($evento = $resultado->fetch_assoc()) {
-    $eventos[] = $evento;
+if ($q !== '') {
+    $patron = '%' . addcslashes($q, '%_\\') . '%';
+    $condiciones[] = '(e.titulo LIKE ? OR e.descripcion LIKE ?)';
+    $tipos      .= 'ss';
+    $valores[]   = $patron;
+    $valores[]   = $patron;
+}
+if ($categoriaId !== 0) {
+    $condiciones[] = 'e.categoria_id = ?';
+    $tipos      .= 'i';
+    $valores[]   = $categoriaId;
 }
 
-$resultado->free();
+$sql = 'SELECT e.id, e.titulo, e.fecha, e.hora, e.descripcion,
+              c.nombre AS categoria
+          FROM eventos e
+          JOIN categorias c ON c.id = e.categoria_id
+         WHERE ' . implode(' AND ', $condiciones) . '
+         ORDER BY e.fecha ASC, e.hora ASC';
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param($tipos, ...$valores);
+$stmt->execute();
+$eventos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 $mysqli->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +96,7 @@ $mysqli->close();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="estilos.css?v=5">
+    <link rel="stylesheet" href="estilos.css?v=6">
 </head>
 <body class="layout">
     <header class="site-header">
@@ -107,6 +105,8 @@ $mysqli->close();
             <nav class="nav">
                 <a href="index.php" class="nav__link is-active">Mis eventos</a>
                 <a href="registrar.php" class="nav__link">Nuevo evento</a>
+                <span class="nav__link">Hola, <?= e($usuarioNombre) ?></span>
+                <a href="logout.php" class="nav__link">Salir</a>
             </nav>
         </div>
     </header>
@@ -127,22 +127,50 @@ $mysqli->close();
         <div class="page__header">
             <div>
                 <h1 class="page__title">Mis eventos</h1>
-                <p class="page__subtitle"><?= count($eventos) ?> eventos registrados</p>
+                <p class="page__subtitle">
+                    <?php if ($buscando): ?>
+                        <?= count($eventos) ?> resultado<?= count($eventos) === 1 ? '' : 's' ?><?= $q !== '' ? ' para «' . e($q) . '»' : '' ?>
+                    <?php else: ?>
+                        <?= count($eventos) ?> eventos registrados
+                    <?php endif; ?>
+                </p>
             </div>
             <a href="registrar.php" class="btn-primary">+ Nuevo evento</a>
         </div>
 
-        <?php if (!empty($eventos)): ?>
+        <form class="buscador" method="get" action="index.php" role="search">
+            <input class="form-input" type="search" name="q" value="<?= e($q) ?>" maxlength="60"
+                   placeholder="Buscar en título o descripción…" aria-label="Buscar eventos">
+            <select class="form-select" name="categoria" aria-label="Filtrar por categoría">
+                <option value="0">Todas las categorías</option>
+                <?php foreach ($categorias as $cat): ?>
+                    <option value="<?= (int) $cat['id'] ?>" <?= $categoriaId === (int) $cat['id'] ? 'selected' : '' ?>>
+                        <?= e($cat['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="btn-primary">Buscar</button>
+            <?php if ($buscando): ?>
+                <a href="index.php" class="btn-secondary">Limpiar</a>
+            <?php endif; ?>
+        </form>
+
+        <?php if (empty($eventos) && $buscando): ?>
+            <div class="empty-state">
+                <p>Sin resultados para tu búsqueda.</p>
+                <a href="index.php" class="btn-secondary">Ver todos mis eventos</a>
+            </div>
+        <?php elseif (empty($eventos)): ?>
+            <div class="empty-state">
+                <p>Aún no tienes eventos registrados.</p>
+                <a href="registrar.php" class="btn-primary">Registrar el primero</a>
+            </div>
+        <?php else: ?>
             <section class="card-list" aria-label="Lista de eventos">
                 <?php foreach ($eventos as $ev): ?>
                     <?= mostrarEvento($ev) ?>
                 <?php endforeach; ?>
             </section>
-        <?php else: ?>
-            <div class="empty-state">
-                <p>Aún no tienes eventos registrados.</p>
-                <a href="registrar.php" class="btn-primary">Registrar el primero</a>
-            </div>
         <?php endif; ?>
     </main>
 
